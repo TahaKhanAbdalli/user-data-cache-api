@@ -36,7 +36,9 @@ export interface AppDeps {
 export function createApp(deps: AppDeps): Express {
   const app = express();
   app.disable('x-powered-by');
-  app.set('trust proxy', true);
+  // Trust only loopback proxies: keeps req.ip correct locally without letting a
+  // public client spoof X-Forwarded-For to dodge the per-IP rate limiter.
+  app.set('trust proxy', 'loopback');
 
   app.use(express.json());
   app.use(cors());

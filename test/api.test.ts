@@ -116,6 +116,16 @@ describe('POST /users', () => {
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe('CONFLICT');
   });
+
+  it('returns 400 (not 500) for a malformed JSON body', async () => {
+    const { app } = buildApp();
+    const res = await request(app)
+      .post('/users')
+      .set('Content-Type', 'application/json')
+      .send('{ "name": "broken" ');
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe('BAD_REQUEST');
+  });
 });
 
 describe('cache management', () => {

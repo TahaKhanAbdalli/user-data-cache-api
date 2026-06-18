@@ -37,6 +37,18 @@ export function errorHandler(logger: Logger): ErrorRequestHandler {
       return;
     }
 
+    // Client errors surfaced by upstream middleware (e.g. body-parser's malformed
+    // JSON, payload too large) expose a 4xx status. Honour it instead of masking
+    // it as a 500.
+    const clientStatus = (err as { status?: number; statusCode?: number }).status;
+    if (typeof clientStatus === 'number' && clientStatus >= 400 && clientStatus < 500) {
+      logger.warn({ statusCode: clientStatus }, 'client request error');
+      res
+        .status(clientStatus)
+        .json({ error: { code: 'BAD_REQUEST', message: 'Malformed request' } });
+      return;
+    }
+
     logger.error({ err }, 'unexpected error');
     const body: ErrorBody = {
       error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' },
