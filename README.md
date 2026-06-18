@@ -239,7 +239,7 @@ pnpm test:coverage   # with coverage report
 pnpm test:watch      # watch mode
 ```
 
-48 tests cover the cache (eviction, TTL, stats), coalescing, the dual-window
+49 tests cover the cache (eviction, TTL, stats), coalescing, the dual-window
 limiter, the queue's concurrency bound, the service orchestration, and the full
 HTTP surface (Supertest): success, 400/404/409/429, headers, and metrics.
 
