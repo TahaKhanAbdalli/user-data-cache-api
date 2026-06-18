@@ -1,0 +1,16 @@
+# Render Blueprint — deploys this service from the included Dockerfile.
+# In the Render dashboard: New + → Blueprint → connect this repo → Apply.
+# Free tier: no card required; the instance sleeps after ~15 min idle and
+# cold-starts (~30–50s) on the next request, then stays warm.
+services:
+  - type: web
+    name: user-data-cache-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production

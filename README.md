@@ -295,6 +295,13 @@ gcloud run deploy user-data-cache-api \
 Cloud Build builds from the `Dockerfile`; Cloud Run injects `PORT`. With
 `--min-instances 0`, demo traffic stays within the always-free tier.
 
+### Render (free tier, no card)
+
+A `render.yaml` Blueprint is included. In the Render dashboard: **New + →
+Blueprint → connect this repo → Apply**. Render builds the Dockerfile and runs
+it on the free plan (it sleeps after ~15 min idle and cold-starts on the next
+request).
+
 ### Docker (any host)
 
 ```bash
