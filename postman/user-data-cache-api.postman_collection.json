@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "User Data Cache API",
+    "description": "Express + TypeScript API with LRU caching, request coalescing, sliding-window rate limiting, async queue processing, and Prometheus metrics. Set the `baseUrl` collection variable (default http://localhost:3000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get user by id (cache miss then hit)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            },
+            "description": "First call simulates a 200ms DB read; subsequent calls within the 60s TTL return instantly from the LRU cache."
+          }
+        },
+        {
+          "name": "Get user by id - not found (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "999"]
+            }
+          }
+        },
+        {
+          "name": "Get user by id - invalid id (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/abc",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "abc"]
+            }
+          }
+        },
+        {
+          "name": "Create user (201)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grace Hopper\",\n  \"email\": \"grace@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] },
+            "description": "Creates a user, assigns the next id, and warms the cache so the first read is a hit."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cache",
+      "item": [
+        {
+          "name": "Cache status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cache-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["cache-status"]
+            }
+          }
+        },
+        {
+          "name": "Clear cache",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/cache", "host": ["{{baseUrl}}"], "path": ["cache"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          }
+        },
+        {
+          "name": "Prometheus metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/metrics", "host": ["{{baseUrl}}"], "path": ["metrics"] }
+          }
+        }
+      ]
+    }
+  ]
+}
