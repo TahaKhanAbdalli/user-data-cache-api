@@ -1,0 +1,58 @@
+{
+  "name": "user-data-cache-api",
+  "version": "1.0.0",
+  "description": "High-performance Express + TypeScript user API with LRU caching, request coalescing, sliding-window rate limiting, async queue processing, and Prometheus metrics.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Muhammad Taha Khan",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "loadtest": "tsx scripts/loadtest.ts",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "pino": "^9.6.0",
+    "pino-http": "^10.4.0",
+    "prom-client": "^15.1.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/supertest": "^6.0.2",
+    "@vitest/coverage-v8": "^3.0.2",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "supertest": "^7.0.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^3.0.2"
+  },
+  "lint-staged": {
+    "*.{ts,js,json,md}": "prettier --write",
+    "*.ts": "eslint --fix"
+  }
+}
