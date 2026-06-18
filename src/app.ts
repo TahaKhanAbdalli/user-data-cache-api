@@ -21,6 +21,8 @@ export interface AppDeps {
   metrics: Metrics;
   rateLimiter: SlidingWindowRateLimiter;
   logger: Logger;
+  /** Express "trust proxy" value; defaults to 'loopback'. */
+  trustProxy?: boolean | number | string;
 }
 
 /**
@@ -36,9 +38,10 @@ export interface AppDeps {
 export function createApp(deps: AppDeps): Express {
   const app = express();
   app.disable('x-powered-by');
-  // Trust only loopback proxies: keeps req.ip correct locally without letting a
-  // public client spoof X-Forwarded-For to dodge the per-IP rate limiter.
-  app.set('trust proxy', 'loopback');
+  // 'loopback' by default (safe locally). Behind a platform proxy, set
+  // TRUST_PROXY (e.g. '1') so req.ip is the real client and the rate limiter
+  // keys per client rather than per proxy.
+  app.set('trust proxy', deps.trustProxy ?? 'loopback');
 
   app.use(express.json());
   app.use(cors());

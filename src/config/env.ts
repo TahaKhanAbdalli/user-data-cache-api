@@ -22,7 +22,22 @@ const EnvSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
   RATE_LIMIT_BURST_WINDOW_MS: z.coerce.number().int().positive().default(10_000),
   RATE_LIMIT_BURST_MAX: z.coerce.number().int().positive().default(5),
+
+  // Express "trust proxy" setting. Default 'loopback' is safe for local/direct
+  // use; behind a single platform proxy (Render/Cloud Run/Heroku) set to a hop
+  // count like '1' so req.ip is the real client and the rate limiter keys per
+  // client rather than per proxy.
+  TRUST_PROXY: z.string().optional(),
 });
+
+/** Coerces the TRUST_PROXY env string into the shape Express expects. */
+function parseTrustProxy(value: string | undefined): boolean | number | string {
+  if (value === undefined || value === '') return 'loopback';
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  const asNumber = Number(value);
+  return Number.isInteger(asNumber) && String(asNumber) === value ? asNumber : value;
+}
 
 export interface AppConfig {
   port: number;
@@ -41,6 +56,7 @@ export interface AppConfig {
     burstWindowMs: number;
     burstMax: number;
   };
+  trustProxy: boolean | number | string;
 }
 
 /** Parses and validates configuration from an environment object. */
@@ -63,5 +79,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
       burstWindowMs: parsed.RATE_LIMIT_BURST_WINDOW_MS,
       burstMax: parsed.RATE_LIMIT_BURST_MAX,
     },
+    trustProxy: parseTrustProxy(parsed.TRUST_PROXY),
   };
 }

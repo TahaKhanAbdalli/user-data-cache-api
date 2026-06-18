@@ -15,6 +15,7 @@ function makeConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     cache: { ttlMs: 60_000, maxEntries: 100, sweepIntervalMs: 10_000 },
     // Effectively unlimited unless a test overrides it.
     rateLimit: { windowMs: 60_000, max: 10_000, burstWindowMs: 10_000, burstMax: 10_000 },
+    trustProxy: 'loopback',
     ...overrides,
   };
 }

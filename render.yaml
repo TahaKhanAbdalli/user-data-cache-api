@@ -14,3 +14,7 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Render sits behind one proxy hop; trust it so req.ip is the real client
+      # and the rate limiter keys per client (not per proxy).
+      - key: TRUST_PROXY
+        value: '1'

@@ -23,6 +23,7 @@ const app = createApp({
   metrics: services.metrics,
   rateLimiter: services.rateLimiter,
   logger,
+  trustProxy: config.trustProxy,
 });
 const stopBackgroundTasks = startBackgroundTasks(services, config, logger);
 
