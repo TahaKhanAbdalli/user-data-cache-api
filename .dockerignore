@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+.git
+.github
+.husky
+.vscode
+.idea
+*.log
+.env
+.env.*
+test
+postman
+*.md

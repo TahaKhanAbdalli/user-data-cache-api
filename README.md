@@ -272,6 +272,38 @@ A Husky pre-commit hook runs lint-staged (Prettier + ESLint) on staged files.
 
 ---
 
+## Deployment
+
+A multi-stage `Dockerfile` is included (build → bundle → slim production image).
+The server reads `PORT` from the environment and binds `0.0.0.0`, so it runs on
+any container platform unchanged.
+
+### Google Cloud Run (source deploy — no local Docker needed)
+
+```bash
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
+
+gcloud run deploy user-data-cache-api \
+  --source . \
+  --region europe-west4 \
+  --allow-unauthenticated \
+  --min-instances 0           # scale to zero so an idle service costs nothing
+```
+
+Cloud Build builds from the `Dockerfile`; Cloud Run injects `PORT`. With
+`--min-instances 0`, demo traffic stays within the always-free tier.
+
+### Docker (any host)
+
+```bash
+docker build -t user-data-cache-api .
+docker run -p 8080:8080 user-data-cache-api   # http://localhost:8080/health
+```
+
+---
+
 ## Trade-offs & assumptions
 
 - **In-memory everything.** Cache, rate-limiter state, and queue live in one
